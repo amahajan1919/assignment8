@@ -64,10 +64,9 @@ def step_size(s):
     pre: s is a lowercase string.
     post: Returns the calculated step size as an integer based on the provided string.
     """
-    numeric_val = 0
-    for c in s:
-        numeric_val += ord(c) - 96
-    return STEP_SIZE_CONSTANT - (numeric_val % STEP_SIZE_CONSTANT)
+    index = hash_word(s, STEP_SIZE_CONSTANT)
+    step = STEP_SIZE_CONSTANT - (index % STEP_SIZE_CONSTANT)
+    return step
 
 
 # TODO: Modify this function. You may delete this comment when you are done.
@@ -138,9 +137,10 @@ def is_reducible(s, hash_table, hash_memo):
         return True
     for i in range(len(s)):
         subword = s[:i] + s[i+1:]
-        if find_word(subword, hash_table) and is_reducible(subword, hash_table, hash_memo):
-            insert_word(s, hash_memo)
-            return True
+        if find_word(subword, hash_table):
+            if is_reducible(subword, hash_table, hash_memo):
+                insert_word(s, hash_memo)
+                return True
     return False
 
 

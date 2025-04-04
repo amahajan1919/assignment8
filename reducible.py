@@ -2,7 +2,7 @@
 Student information for this assignment:
 
 Replace <FULL NAME> with your name.
-On my/our honor, Aakanksha Mahajan and <FULL NAME>, this
+On my/our honor, Aakanksha Mahajan and Surabhi Arun, this
 programming assignment is my own work and I have not provided this code to
 any other student.
 
@@ -13,7 +13,7 @@ code to someone else), the case shall be submitted to the Office of the Dean of
 Students. Academic penalties up to and including an F in the course are likely.
 
 UT EID 1: am96292
-UT EID 2:
+UT EID 2: sa59594
 """
 
 # the constant used to calculate the step size
@@ -132,6 +132,16 @@ def is_reducible(s, hash_table, hash_memo):
     post: Returns True if s is reducible (also updates hash_memo by
           inserting s if reducible), otherwise returns False.
     """
+    if s in ["a", "i", "o"]:
+        return True
+    if find_word(s, hash_memo):
+        return True
+    for i in range(len(s)):
+        subword = s[:i] + s[i+1:]
+        if find_word(subword, hash_table) and is_reducible(subword, hash_table, hash_memo):
+            insert_word(s, hash_memo)
+            return True
+    return False
 
 
 # TODO: Modify this function. You may delete this comment when you are done.
@@ -142,6 +152,10 @@ def get_longest_words(string_list):
     pre: string_list is a list of lowercase strings.
     post: Returns a list of words in string_list that have the maximum length.
     """
+    if not string_list:
+        return []
+    max_len = max(len(w) for w in string_list)
+    return [w for w in string_list if len(w) == max_len]
 
 
 # TODO: Modify this function. You may delete this comment when you are done.
@@ -187,6 +201,26 @@ def main():
 
     # print the reducible words in alphabetical order
     # one word per line
+
+    import sys
+    words = [line.strip() for line in sys.stdin]
+    n = 2 * len(words) + 1
+    while not is_prime(n):
+        n += 1
+    table = ["" for _ in range(n)]
+    for w in words:
+        insert_word(w, table)
+    m = int(0.2 * len(words)) + 1
+    while not is_prime(m):
+        m += 1
+    memo = ["" for _ in range(m)]
+    reducible = []
+    for w in words:
+        if is_reducible(w, table, memo):
+            reducible.append(w)
+    longest = get_longest_words(reducible)
+    for w in sorted(longest):
+        print(w)
 
 
 if __name__ == "__main__":

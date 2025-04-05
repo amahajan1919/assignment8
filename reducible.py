@@ -66,8 +66,9 @@ def step_size(s):
     """
     index = hash_word(s, STEP_SIZE_CONSTANT)
     step = STEP_SIZE_CONSTANT - (index % STEP_SIZE_CONSTANT)
+    if step == 0:
+        step = 1
     return step
-
 
 # TODO: Modify this function. You may delete this comment when you are done.
 def insert_word(s, hash_table):
